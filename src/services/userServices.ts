@@ -4,27 +4,55 @@ import {
 	findAllUsers,
 	findByUsername,
 	findUserById,
+	saveGuest,
+	saveOrganizer,
 	saveUser,
   updateUser,
 } from '../repository/userRepository';
-import { UserType } from '../types/User';
-import { checkPassword } from '../utils/bcrypt';
+import { GuestType, OrganizerType, UserRegisterType, UserType } from '../types/User';
+import { checkPassword, encodePassword } from '../utils/bcrypt';
 import { notFoundException } from '../utils/exceptions/notFoundException';
 import { generateAccessToken } from '../utils/jwt';
 
-const userRegister = async (user: UserType) => {
+const userRegister = async (payload: UserRegisterType) => {
 	try {
-		const userExists = await findByUsername(user.username);
+		const userExists = await findByUsername(payload.user.username);
 
-		if (!user.username || !user.password) {
+		if (!payload.user.username || !payload.user.password) {
 			throw new Error('Preencha todos os campos!');
 		}
 
 		if (userExists) {
 			throw new Error('Usuário já cadastrado!');
 		}
+		let pass = await encodePassword(payload.user.password);
+
+		let user = {
+			username: payload.user.username,
+			password: pass,
+			role: payload.user.role
+		}
 
 		const registered = await saveUser(user);
+		
+		if(user.role === 'guest'){
+			let guest: GuestType = {
+				...payload.guest,
+				user_id: registered.id
+			}
+
+			await saveGuest(guest);
+		}
+		
+		if(user.role === 'organizer'){
+			let organizer: OrganizerType = {
+				...payload.organizer,
+				user_id: registered.id
+			}
+
+			await saveOrganizer(organizer);
+		}
+
 		return registered;
 	} catch (e) {
 		throw new Error(e.message);
@@ -45,19 +73,19 @@ const signIn = async ({ username, password }) => {
 			throw new Error("Error ao gerar token");
 		}
 
-		return { token };
+		return token;
 	} catch (e) {
 		throw new Error(e.message);
 	}
 };
 
-const userFindById = async (id) => {
+const userFindById = async (id: string) => {
 	try {
-		const user = await findUserById(id);
+		const user = await findUserById(Number(id));
 		if (!user) throw new Error(notFoundException('usuário'));
 		return user;
 	} catch (e) {
-		throw new Error();
+		throw new Error(e.message);
 	}
 };
 

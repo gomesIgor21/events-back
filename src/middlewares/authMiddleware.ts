@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 
+const secret = process.env.TOKEN_SECRET || 'UM_SEGREDO'
+
 const authMiddleware = async (req, res, next) => {
 	try {
 
@@ -8,7 +10,7 @@ const authMiddleware = async (req, res, next) => {
     
     if (!token) throw new Error('Token não foi inserido corretamente');
     
-    const verified = jwt.verify(token, process.env.TOKEN_SECRET)
+    const verified = jwt.verify(token, secret)
     if(!verified) throw new Error("Token inválido")  
     
     req.payload = verified;

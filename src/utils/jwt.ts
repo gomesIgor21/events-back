@@ -8,6 +8,7 @@ const generateAccessToken = (user) => {
 		{
 			id: user.id,
 			username: user.username,
+			role: user.role
 		},
 		secret,
 		{ expiresIn: '12h' }

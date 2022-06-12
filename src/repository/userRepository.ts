@@ -1,4 +1,4 @@
-import { UserType } from '../types/User';
+import { GuestType, OrganizerType, UserType } from '../types/User';
 import { prisma } from '../utils/prismaClient';
 
 const saveUser = async (user: UserType) => {
@@ -7,6 +7,37 @@ const saveUser = async (user: UserType) => {
 			data: {
 				username: user.username,
 				password: user.password,
+				role: user.role
+			},
+		});
+		return saved;
+	} catch (e) {
+		throw new Error(e.message);
+	}
+};
+
+const saveGuest = async (guest: GuestType) => {
+	try {
+		const saved = prisma.guests.create({
+			data: {
+				name: guest.name,
+				phone: guest.phone,
+				user_id: guest.user_id,
+			},
+		});
+		return saved;
+	} catch (e) {
+		throw new Error(e.message);
+	}
+};
+
+const saveOrganizer = async (organizer: OrganizerType) => {
+	try {
+		const saved = prisma.organizers.create({
+			data: {
+				name: organizer.name,
+				phone: organizer.phone,
+				user_id: organizer.user_id
 			},
 		});
 		return saved;
@@ -30,14 +61,16 @@ const findByUsername = async (username: string) => {
 
 const findUserById = async (id: number) => {
 	try {
-		const user = prisma.users.findUnique({
+		console.log("FindById")
+		const user = await prisma.users.findUnique({
 			where: {
 				id,
 			},
 			select: {
 				id: true,
-				password: true,
-			},
+				username: true,
+				role: true
+			}
 		});
 		return user;
 	} catch (e) {
@@ -91,6 +124,8 @@ const findAllUsers = async () => {
 
 export {
 	saveUser,
+	saveGuest,
+	saveOrganizer,
 	findByUsername,
 	findUserById,
 	updateUser,

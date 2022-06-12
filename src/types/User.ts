@@ -1,12 +1,27 @@
+export type UserRegisterType = {
+  user: UserType,
+  guest?: GuestType,
+  organizer?: OrganizerType 
+}
+
 export type UserType = {
   id?: number;
   username: string;
   password: string;
+  role: string;
 }
 
-export type GuestUserType = {
-  id?: number;
+export type GuestType = {
+  id?: number
+  user_id: number;
   name: string;
   phone: string;
-  user: UserType;
 }
+
+export type OrganizerType = {
+  id?: number
+  user_id: number;
+  name: string;
+  phone: string;
+}
+
