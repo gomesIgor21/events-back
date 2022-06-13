@@ -22,6 +22,7 @@ const getUserFromJwt = (jwtToken) => {
 	return {
 		id: token.id,
 		username: token.username,	
+		role: token.role
 	};
 };
 

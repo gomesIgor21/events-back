@@ -24,9 +24,9 @@ POST - /u/register/organizers
   "user":{
     "username": <example@gmail.com>
     "password": <123456>,
-    "role": "guest"
+    "role": "organizer"
   },
-  "guest":{
+  "organizer":{
     "name": <Example Name>
     "phone": <45998899889>
   }

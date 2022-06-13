@@ -11,7 +11,6 @@ const roleMiddleware = (roles) => {
 			req.user = user;
 			next();
 		} catch (e) {
-			log.error();
 			res.status(403).json({error: e.message});
 		}		
 	};

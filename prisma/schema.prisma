@@ -46,8 +46,8 @@ model Guests {
 model Events {
   id Int @id @default(autoincrement())
   title String
-  date String
-  hour String
+  date DateTime
+  hour DateTime
   description String
   organizer Organizers @relation(fields: [organizer_id], references: [id])
   organizer_id Int

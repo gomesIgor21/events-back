@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { eventRouter } from './controllers/eventController';
 import { userRouter } from './controllers/userController';
 
 const router = Router();
@@ -14,5 +15,6 @@ router.get('/check', async (req, res) => {
 });
 
 router.use('/u', userRouter);
+router.use('/', eventRouter);
 
 export { router };
